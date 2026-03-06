@@ -8,26 +8,29 @@ interface SearchParams {
     startIndex?: number
     printType?: "all" | "books" | "magazines"
     orderBy?: "relevance" | "newest"
+    signal?: AbortSignal
 }
 
-export async function searchBooks(
-    params: SearchParams
-): Promise<Book[]> {
-    const { query, startIndex = 0, printType, orderBy } = params
+export async function searchBooks({
+    query,
+    startIndex = 0,
+    printType,
+    orderBy,
+    signal,
+}: SearchParams): Promise<Book[]> {
 
     const url = new URL(BASE_URL)
+
     url.searchParams.set("q", query)
     url.searchParams.set("startIndex", startIndex.toString())
+    url.searchParams.set("maxResults", "20")
 
-    if (printType) {
-        url.searchParams.set("printType", printType)
-    }
+    if (printType) url.searchParams.set("printType", printType)
+    if (orderBy) url.searchParams.set("orderBy", orderBy)
 
-    if (orderBy) {
-        url.searchParams.set("orderBy", orderBy)
-    }
-
-    const response = await fetch(url.toString())
+    const response = await fetch(url.toString(), {
+        signal,
+    })
 
     if (!response.ok) {
         throw new Error("Erro ao buscar livros")
@@ -35,7 +38,5 @@ export async function searchBooks(
 
     const data = await response.json()
 
-    return (
-        data.items?.map(mapGoogleBookToEntity) ?? []
-    )
+    return data.items?.map(mapGoogleBookToEntity) ?? []
 }
