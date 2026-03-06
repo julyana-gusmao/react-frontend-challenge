@@ -22,17 +22,18 @@ export const useBookshelfStore = create<BookshelfState>()(
 
             addBook: (book) =>
                 set((state) => {
+
                     const exists = state.books.find((b) => b.id === book.id)
+
                     if (exists) return state
 
+                    const optimisticBook = {
+                        ...book,
+                        status: "QUERO_LER" as const,
+                    }
+
                     return {
-                        books: [
-                            ...state.books,
-                            {
-                                ...book,
-                                status: "QUERO_LER",
-                            },
-                        ],
+                        books: [...state.books, optimisticBook],
                     }
                 }),
 
