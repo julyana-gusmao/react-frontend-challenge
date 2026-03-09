@@ -13,3 +13,9 @@ export interface Book {
     publisher?: string
     previewLink?: string
 }
+
+export type BooksSearchParams = {
+    q?: string
+    printType?: "all" | "books" | "magazines"
+    orderBy?: "relevance" | "newest"
+}

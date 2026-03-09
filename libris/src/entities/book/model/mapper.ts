@@ -1,4 +1,6 @@
+import { capitalizeWords } from "@/shared/lib/utils/captalize-words"
 import type { Book } from "./types"
+import { formatDate } from "@/shared/lib/utils/format-date"
 
 export interface GoogleBookVolume {
     id: string
@@ -18,16 +20,30 @@ export interface GoogleBookVolume {
 export function mapGoogleBookToEntity(
     data: GoogleBookVolume
 ): Book {
+
+    const rawTitle = data.volumeInfo?.title
+
     return {
         id: data.id,
-        title: data.volumeInfo?.title ?? "Sem título",
+
+        title: rawTitle
+            ? capitalizeWords(rawTitle)
+            : "Sem título",
+
         authors: data.volumeInfo?.authors ?? ["Autor desconhecido"],
+
         description: data.volumeInfo?.description,
+
         thumbnail: normalizeThumbnail(
             data.volumeInfo?.imageLinks?.thumbnail
         ),
-        publishedDate: data.volumeInfo?.publishedDate,
+
+        publishedDate: formatDate(
+            data.volumeInfo?.publishedDate
+        ),
+
         publisher: data.volumeInfo?.publisher,
+
         previewLink: data.volumeInfo?.previewLink,
     }
 }
