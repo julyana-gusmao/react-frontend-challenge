@@ -2,18 +2,19 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
-  createColumnHelper,
   type SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table"
 
-import { StatusSelect } from "./status-select"
 import { useBookshelf } from "../hooks/use-bookshelf"
 import type { BookshelfBook } from "../model/types"
-import { useState } from "react"
-import { ArrowUpDown, Trash2 } from "lucide-react"
 
-const columnHelper = createColumnHelper<BookshelfBook>()
+import { useMemo, useState } from "react"
+import { ArrowUpDown } from "lucide-react"
+import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { createBookshelfColumns } from "./bookshelf-columns"
+
 
 type Props = {
   books: BookshelfBook[]
@@ -21,81 +22,31 @@ type Props = {
 
 export function BookshelfTable({ books }: Props) {
   const { removeBook, updateStatus } = useBookshelf()
+  const navigate = useNavigate()
 
   const [sorting, setSorting] = useState<SortingState>([])
 
-  const columns = [
-    columnHelper.accessor("thumbnail", {
-      header: "Capa",
-      cell: (info) => (
-        <img
-          src={
-            info.getValue() ??
-            "https://via.placeholder.com/80x120"
-          }
-          className="w-12 rounded shadow"
-        />
-      ),
-    }),
+  function openBook(id: string) {
+    navigate({ to: `/app/book/${id}` })
+  }
 
-    columnHelper.accessor("title", {
-      header: "Título",
-      enableSorting: true,
-      cell: (info) => (
-        <span className="font-medium">
-          {info.getValue()}
-        </span>
-      ),
-    }),
+  function handleRemove(book: BookshelfBook) {
+    removeBook(book.id)
 
-    columnHelper.accessor("authors", {
-      header: "Autor",
-      cell: (info) => (
-        <span className="text-sm text-muted-foreground">
-          {info.getValue().join(", ")}
-        </span>
-      ),
-    }),
+    toast("Livro excluído da estante", {
+      description: book.title,
+    })
+  }
 
-    columnHelper.accessor("publishedDate", {
-      header: "Publicação",
-      cell: (info) => (
-        <span className="text-sm">
-          {info.getValue() ?? "-"}
-        </span>
-      ),
-    }),
-
-    columnHelper.accessor("status", {
-      header: "Status",
-      enableSorting: true,
-      cell: (info) => (
-        <StatusSelect
-          value={info.getValue()}
-          onChange={(value) =>
-            updateStatus(info.row.original.id, value)
-          }
-        />
-      ),
-    }),
-
-    columnHelper.display({
-      id: "actions",
-      header: "",
-      cell: (info) => (
-        <button
-          onClick={() => removeBook(info.row.original.id)}
-          className="
-            text-red-500
-            hover:text-red-700
-            transition
-          "
-        >
-          <Trash2 size={18} />
-        </button>
-      ),
-    }),
-  ]
+  const columns = useMemo(
+    () =>
+      createBookshelfColumns({
+        openBook,
+        removeBook: handleRemove,
+        updateStatus,
+      }),
+    [updateStatus]
+  )
 
   const table = useReactTable({
     data: books,
@@ -130,6 +81,7 @@ export function BookshelfTable({ books }: Props) {
                     <button
                       onClick={header.column.getToggleSortingHandler()}
                       className="flex items-center gap-1"
+                      aria-label={`Ordenar por ${header.column.id}`}
                     >
                       {flexRender(
                         header.column.columnDef.header,
@@ -153,10 +105,29 @@ export function BookshelfTable({ books }: Props) {
 
         <tbody>
 
+          {table.getRowModel().rows.length === 0 && (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="
+                  text-center
+                  py-10
+                  text-muted-foreground
+                "
+              >
+                Nenhum livro na estante
+              </td>
+            </tr>
+          )}
+
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="border-t hover:bg-muted/40"
+              className="
+                border-t
+                hover:bg-muted/40
+                transition-colors
+              "
             >
               {row.getVisibleCells().map((cell) => (
                 <td

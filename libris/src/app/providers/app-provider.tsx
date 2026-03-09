@@ -1,6 +1,7 @@
-import type { ReactNode } from "react"
 import { QueryProvider } from "./query-provider"
-import { ThemeProvider } from "./theme-provider"
+import { AuthProvider } from "@/features/auth/provider/auth-provider"
+import { Toaster } from "sonner"
+import type { ReactNode } from "react"
 
 interface Props {
   children: ReactNode
@@ -8,10 +9,11 @@ interface Props {
 
 export function AppProvider({ children }: Props) {
   return (
-    <ThemeProvider>
-      <QueryProvider>
+    <QueryProvider>
+      <AuthProvider>
         {children}
-      </QueryProvider>
-    </ThemeProvider>
+        <Toaster />
+      </AuthProvider>
+    </QueryProvider>
   )
 }

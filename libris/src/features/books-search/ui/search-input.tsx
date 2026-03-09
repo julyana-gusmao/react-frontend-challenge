@@ -1,3 +1,4 @@
+import { Input } from "@/shared/ui"
 import { Search, X } from "lucide-react"
 
 type Props = {
@@ -16,7 +17,6 @@ export function SearchInput({
   return (
     <div className="relative w-full">
 
-      {/* Ícone */}
       <Search
         className="
           absolute
@@ -29,8 +29,7 @@ export function SearchInput({
         "
       />
 
-      {/* Input */}
-      <input
+      <Input
         type="text"
         value={value}
         placeholder={placeholder}
@@ -53,7 +52,6 @@ export function SearchInput({
         `}
       />
 
-      {/* Botão limpar */}
       {value && (
         <button
           onClick={() => onChange("")}

@@ -1,5 +1,5 @@
 import type { BookshelfBook } from "../model/types"
-import { BookshelfTable } from "../ui/bookshelf-table"
+import { BookshelfTable } from "./bookshelf-table"
 
 type Props = {
   title: string
@@ -18,7 +18,10 @@ export function BookshelfSection({ title, books }: Props) {
           {title}
         </h2>
 
-        <span className="text-sm text-muted-foreground">
+        <span
+          className="text-sm text-muted-foreground"
+          aria-label={`${books.length} livros nesta seção`}
+        >
           {books.length} livro{books.length > 1 && "s"}
         </span>
 

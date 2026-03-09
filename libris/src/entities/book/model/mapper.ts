@@ -1,6 +1,6 @@
-import { capitalizeWords } from "@/shared/lib/utils/captalize-words"
+import { capitalizeWords } from "@/shared/utils/captalize-words"
 import type { Book } from "./types"
-import { formatDate } from "@/shared/lib/utils/format-date"
+import { formatDate } from "@/shared/utils/format-date"
 
 export interface GoogleBookVolume {
     id: string

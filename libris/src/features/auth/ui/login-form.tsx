@@ -7,6 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { loginSchema, type LoginFormData } from "../model/login-schema"
 
+import { Loader2 } from "lucide-react"
+import { Button, Card, CardContent, Input, Label } from "@/shared/ui"
+
 export function LoginForm() {
   const navigate = useNavigate()
 
@@ -31,32 +34,64 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Card className="border-zinc-200 shadow-sm py-5">
+      <CardContent>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
+          <div className="space-y-2">
+            <Label htmlFor="email">
+              Email
+            </Label>
 
-      <div>
-        <input
-          placeholder="Email"
-          {...register("email")}
-        />
-        {errors.email && <p>{errors.email.message}</p>}
-      </div>
+            <Input
+            autoFocus
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              {...register("email")}
+            />
 
-      <div>
-        <input
-          type="password"
-          placeholder="Senha"
-          {...register("password")}
-        />
-        {errors.password && <p>{errors.password.message}</p>}
-      </div>
+            {errors.email && (
+              <p className="text-sm text-red-500">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-      >
-        Entrar
-      </button>
+          <div className="space-y-2">
+            <Label htmlFor="password">
+              Senha
+            </Label>
 
-    </form>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Digite sua senha"
+              {...register("password")}
+            />
+
+            {errors.password && (
+              <p className="text-sm text-red-500">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-black hover:bg-zinc-800 text-white"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+
+            Entrar
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

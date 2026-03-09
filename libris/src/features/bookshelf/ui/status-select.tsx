@@ -1,27 +1,53 @@
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/shared/ui"
 import type { BookStatus } from "@/entities/book/model/types"
 
 type Props = {
-  value: BookStatus
+  value: BookStatus 
   onChange: (value: BookStatus) => void
+}
+
+const statusLabels: Record<BookStatus, string> = {
+  QUERO_LER: "Quero Ler",
+  LENDO: "Lendo",
+  CONCLUIDO: "Concluído",
 }
 
 export function StatusSelect({ value, onChange }: Props) {
   return (
-    <select
+    <Select
       value={value}
-      onChange={(e) => onChange(e.target.value as BookStatus)}
-      className="
-        border
-        rounded-md
-        px-2
-        py-1
-        text-sm
-        bg-background
-      "
+      onValueChange={(val) => onChange(val as BookStatus)}
     >
-      <option value="QUERO_LER">📚 Quero Ler</option>
-      <option value="LENDO">📖 Lendo</option>
-      <option value="CONCLUIDO">✅ Concluído</option>
-    </select>
+      <SelectTrigger
+        className="w-35"
+        aria-label="Alterar status do livro"
+      >
+        <SelectValue>
+          {statusLabels[value]}
+        </SelectValue>
+      </SelectTrigger>
+
+      <SelectContent>
+
+        <SelectItem value="QUERO_LER">
+          {statusLabels.QUERO_LER}
+        </SelectItem>
+
+        <SelectItem value="LENDO">
+          {statusLabels.LENDO}
+        </SelectItem>
+
+        <SelectItem value="CONCLUIDO">
+          {statusLabels.CONCLUIDO}
+        </SelectItem>
+
+      </SelectContent>
+    </Select>
   )
 }

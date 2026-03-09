@@ -1,6 +1,6 @@
 export function EmptyBookshelf() {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
+    <main className="flex flex-col items-center justify-center py-20 text-center">
 
       <div className="text-6xl mb-4">
         📚
@@ -14,6 +14,6 @@ export function EmptyBookshelf() {
         Busque livros e adicione à sua estante para acompanhar sua leitura.
       </p>
 
-    </div>
+    </main>
   )
 }

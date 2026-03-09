@@ -1,5 +1,5 @@
 import type { Book } from "@/entities/book/model/types"
-import { useBookshelf } from "../hooks/use-bookshelf"
+import { useBookshelf } from "@/features/bookshelf"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
