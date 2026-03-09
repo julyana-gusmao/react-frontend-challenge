@@ -27,7 +27,7 @@ export function BookshelfTable({ books }: Props) {
   const [sorting, setSorting] = useState<SortingState>([])
 
   function openBook(id: string) {
-    navigate({ to: `/app/book/${id}` })
+    navigate({ to: `/app/book/${id}`, viewTransition: true })
   }
 
   function handleRemove(book: BookshelfBook) {

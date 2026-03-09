@@ -19,7 +19,7 @@ export function AppSidebar() {
 
   function handleLogout() {
     logout()
-    navigate({ to: "/login" })
+    navigate({ to: "/login", viewTransition: true })
   }
 
   return (

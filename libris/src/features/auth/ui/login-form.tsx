@@ -30,6 +30,7 @@ export function LoginForm() {
 
     navigate({
       to: "/app/books",
+      viewTransition: true
     })
   }
 

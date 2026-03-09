@@ -15,6 +15,7 @@ export function BookCard({ book }: Props) {
     <Link
       to={`/app/book/${book.id}`}
       className="block"
+      viewTransition
     >
       <div
         className="

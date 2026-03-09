@@ -1,6 +1,6 @@
 import { Outlet } from "@tanstack/react-router"
-import { AppSidebar } from "../widgets/sidebar/sidebar"
 import { ThemeProvider } from "../providers/theme-provider"
+import { AppSidebar } from "@/widgets/sidebar"
 
 export function PrivateLayout() {
   return (
@@ -10,7 +10,7 @@ export function PrivateLayout() {
         <AppSidebar />
 
         <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
+            <Outlet />
         </main>
 
       </div>

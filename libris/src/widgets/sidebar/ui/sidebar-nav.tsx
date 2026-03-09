@@ -1,4 +1,4 @@
-import { MENU } from "@/widgets/sidebar/lib/sidebar-menu"
+import { MENU } from "../lib/sidebar-menu"
 import { SidebarItem } from "./sidebar-item"
 import type { NavigateFn } from "@tanstack/react-router"
 
@@ -22,7 +22,7 @@ export function SidebarNav({
           active={pathname === item.path}
           label={item.label}
           icon={item.icon}
-          onClick={() => navigate({ to: item.path })}
+          onClick={() => navigate({ to: item.path, viewTransition: true })}
         />
       ))}
     </nav>
