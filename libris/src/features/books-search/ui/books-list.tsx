@@ -1,9 +1,8 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useState } from "react"
+import { useWindowVirtualizer } from "@tanstack/react-virtual"
 import type { Book } from "@/entities/book/model/types"
 import { BookCard } from "./books-card"
 import { Loader2 } from "lucide-react"
-import { BookCardSkeleton } from "./books-card-skeleton"
-import { booksGridClass } from "@/features/books-search/ui/books-grid"
 
 type Props = {
   books: Book[]
@@ -13,6 +12,8 @@ type Props = {
   isLoading?: boolean
 }
 
+const CARD_HEIGHT = 320
+
 export function BooksList({
   books,
   fetchNextPage,
@@ -21,37 +22,53 @@ export function BooksList({
   isLoading,
 }: Props) {
 
-  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const [columns, setColumns] = useState(1)
 
   useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return
+    function updateColumns() {
+      const width = window.innerWidth
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0]
-
-        if (entry.isIntersecting) {
-          fetchNextPage()
-        }
-      },
-      {
-        rootMargin: "300px",
-      }
-    )
-
-    const current = loadMoreRef.current
-
-    if (current) observer.observe(current)
-
-    return () => {
-      if (current) observer.unobserve(current)
+      if (width >= 1280) setColumns(6)
+      else if (width >= 1024) setColumns(5)
+      else if (width >= 768) setColumns(4)
+      else if (width >= 640) setColumns(3)
+      else setColumns(2)
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+    updateColumns()
+    window.addEventListener("resize", updateColumns)
+
+    return () => window.removeEventListener("resize", updateColumns)
+  }, [])
+
+  const rows = Math.ceil(books.length / columns)
+
+  const rowVirtualizer = useWindowVirtualizer({
+    count: rows,
+    estimateSize: () => CARD_HEIGHT,
+    overscan: 5,
+  })
+
+  const virtualRows = rowVirtualizer.getVirtualItems()
+
+  useEffect(() => {
+    const lastRow = virtualRows[virtualRows.length - 1]
+
+    if (!lastRow) return
+
+    if (
+      lastRow.index >= rows - 2 &&
+      hasNextPage &&
+      !isFetchingNextPage
+    ) {
+      fetchNextPage()
+    }
+  }, [virtualRows, rows, hasNextPage, isFetchingNextPage, fetchNextPage])
 
   if (isLoading) {
     return (
       <div className="flex justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader2 className="animate-spin h-8 w-8 text-muted-foreground" />
       </div>
     )
   }
@@ -59,35 +76,56 @@ export function BooksList({
   if (books.length === 0) {
     return (
       <div className="flex justify-center py-24 text-muted-foreground">
-        Nenhum livro encontrado.
+        Nenhum livro encontrado
       </div>
     )
   }
 
   return (
-    <div className="space-y-10">
+    <div
+      style={{
+        height: `${rowVirtualizer.getTotalSize()}px`,
+        position: "relative",
+      }}
+    >
 
-      <div className={booksGridClass}>
-        {books.map((book) => (
-          <BookCard
-            key={book.id}
-            book={book}
-          />
-        ))}
-      </div>
+      {virtualRows.map((virtualRow) => {
 
-      {isFetchingNextPage && (
-        <div className={booksGridClass}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <BookCardSkeleton key={i} />
-          ))}
-        </div>
-      )}
+        const start = virtualRow.index * columns
+        const end = start + columns
+        const rowItems = books.slice(start, end)
 
-      <div
-        ref={loadMoreRef}
-        className="h-10"
-      />
+        return (
+          <div
+            key={virtualRow.key}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              transform: `translateY(${virtualRow.start}px)`
+            }}
+          >
+
+            <div
+              className="grid gap-6 px-2"
+              style={{
+                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
+              }}
+            >
+
+              {rowItems.map((book) => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                />
+              ))}
+
+            </div>
+
+          </div>
+        )
+      })}
 
     </div>
   )
