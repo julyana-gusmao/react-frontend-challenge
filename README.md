@@ -6,13 +6,13 @@ Libris é uma aplicação web de biblioteca virtual construída com React, segui
 
 O projeto segue a **arquitetura FSD**, organizada em camadas e features para garantir clareza, escalabilidade e manutenção:
 
-src/
-├─ app/               # Rotas e layouts (Private / Public)
-├─ entities/          # Modelos de dados e lógicas de negócio
-├─ features/          # Funcionalidades específicas (ex: autenticação, busca)
-├─ shared/            # Componentes e libs reutilizáveis
-├─ widgets/           # Combinações de features em componentes compostos
-└─ pages/             # Páginas finais do aplicativo
+src/<br/>
+├─ app/               # Rotas e layouts (Private / Public)<br/>
+├─ entities/          # Modelos de dados e lógicas de negócio<br/>
+├─ features/          # Funcionalidades específicas (ex: autenticação, busca)<br/>
+├─ shared/            # Componentes e libs reutilizáveis<br/>
+├─ widgets/           # Combinações de features em componentes compostos<br/>
+└─ pages/             # Páginas finais do aplicativo<br/>
 
 ### Boas práticas aplicadas:
 
@@ -20,6 +20,7 @@ src/
 - Separação clara entre entidades, features e camadas de apresentação.
 - Componentes isolados e reutilizáveis com foco em responsividade e acessibilidade.
 - Private e Public Layouts, garantindo proteção de rotas privadas e consistência visual.
+- Page Transitions com **viewTransition**
 
 ## ♿ Acessibilidade
 
