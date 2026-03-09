@@ -7,7 +7,7 @@ type BookshelfBook = Book & {
     status: BookStatus
 }
 
-type BookshelfState = {
+export type BookshelfState = {
     books: BookshelfBook[]
 
     addBook: (book: Book) => void
