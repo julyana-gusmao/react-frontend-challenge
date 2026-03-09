@@ -7,7 +7,7 @@ import { SidebarHeader } from "./sidebar-header"
 import { SidebarFooter } from "./sidebar-footer"
 
 export function AppSidebar() {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
   const navigate = useNavigate()
   const { logout } = useAuth()
@@ -27,7 +27,7 @@ export function AppSidebar() {
       className={`
         h-screen border-r bg-background flex flex-col
         transition-all duration-300 sticky top-0
-        ${collapsed ? "w-16" : "w-64"}
+        ${collapsed ? "w-16" : "lg:w-64 w-full"}
       `}
     >
       <SidebarHeader

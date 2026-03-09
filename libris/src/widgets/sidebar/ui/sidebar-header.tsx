@@ -14,7 +14,7 @@ export function SidebarHeader({ collapsed, toggle }: Props) {
     >
       {!collapsed && (
         <span className="font-semibold text-lg whitespace-nowrap">
-          Libris
+         📚 Libris
         </span>
       )}
 

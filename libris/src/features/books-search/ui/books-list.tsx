@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useWindowVirtualizer } from "@tanstack/react-virtual"
 import type { Book } from "@/entities/book/model/types"
 import { BookCard } from "./books-card"
@@ -12,7 +12,8 @@ type Props = {
   isLoading?: boolean
 }
 
-const CARD_HEIGHT = 320
+const MOBILE_CARD_HEIGHT = 240 
+const DESKTOP_CARD_HEIGHT = 320
 
 export function BooksList({
   books,
@@ -21,13 +22,16 @@ export function BooksList({
   isFetchingNextPage,
   isLoading,
 }: Props) {
-
   const [columns, setColumns] = useState(1)
+
+  const getCardHeight = useCallback(() => {
+    if (typeof window === 'undefined') return DESKTOP_CARD_HEIGHT
+    return window.innerWidth < 640 ? MOBILE_CARD_HEIGHT : DESKTOP_CARD_HEIGHT
+  }, [])
 
   useEffect(() => {
     function updateColumns() {
       const width = window.innerWidth
-
       if (width >= 1280) setColumns(6)
       else if (width >= 1024) setColumns(5)
       else if (width >= 768) setColumns(4)
@@ -37,7 +41,6 @@ export function BooksList({
 
     updateColumns()
     window.addEventListener("resize", updateColumns)
-
     return () => window.removeEventListener("resize", updateColumns)
   }, [])
 
@@ -45,7 +48,7 @@ export function BooksList({
 
   const rowVirtualizer = useWindowVirtualizer({
     count: rows,
-    estimateSize: () => CARD_HEIGHT,
+    estimateSize: getCardHeight,
     overscan: 5,
   })
 
@@ -53,9 +56,7 @@ export function BooksList({
 
   useEffect(() => {
     const lastRow = virtualRows[virtualRows.length - 1]
-
     if (!lastRow) return
-
     if (
       lastRow.index >= rows - 2 &&
       hasNextPage &&
@@ -88,9 +89,7 @@ export function BooksList({
         position: "relative",
       }}
     >
-
       {virtualRows.map((virtualRow) => {
-
         const start = virtualRow.index * columns
         const end = start + columns
         const rowItems = books.slice(start, end)
@@ -106,27 +105,19 @@ export function BooksList({
               transform: `translateY(${virtualRow.start}px)`
             }}
           >
-
             <div
-              className="grid gap-6 px-2"
+              className="grid gap-3 sm:gap-6 px-2"
               style={{
                 gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
               }}
             >
-
               {rowItems.map((book) => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                />
+                <BookCard key={book.id} book={book} />
               ))}
-
             </div>
-
           </div>
         )
       })}
-
     </div>
   )
 }

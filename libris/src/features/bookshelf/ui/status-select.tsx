@@ -25,7 +25,7 @@ export function StatusSelect({ value, onChange }: Props) {
       onValueChange={(val) => onChange(val as BookStatus)}
     >
       <SelectTrigger
-        className="w-35"
+        className="w-full"
         aria-label="Alterar status do livro"
       >
         <SelectValue>
