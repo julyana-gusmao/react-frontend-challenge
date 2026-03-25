@@ -61,7 +61,7 @@ npm install
 2 - Crie um arquivo .env na raiz do projeto:
 
 ```git
-VITE_GOOGLE_BOOKS_KEY=AIzaSyDbfj635fh1FS2qXzGClnmZ9rS1oQEGnuw
+VITE_GOOGLE_BOOKS_KEY=sua_chave_aqui
 ```
 
 Obs: A chave do Google Books API é mutável por segurança, distribuída no momento apenas para o teste e driblar o `rate-limiting` da API.
